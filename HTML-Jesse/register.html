@@ -3,43 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Volunteer Registration - Register</title>
+  <title>Volunteer Registration</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
+    <div class="site-branding">
     <h1>Community Volunteer Registration</h1>
+    <p class="tagline">Connecting willing hands with community needs</p>
+    </div>
     <nav aria-label="Main navigation">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="register.html">Register as a volunteer</a></li>
-        <li><a href="activities.html">Activities</a></li>
-        <li><a href="about.html">About</a></li>
+        <li><a href="register.html" aria-current="page">Register as a volunteer</a></li>
+        <li><a href="activities.html">Activities you can do!</a></li>
+        <li><a href="about.html">Volunteer Areas</a></li>
       </ul>
     </nav>
   </header>
 
-  <main>
-    <h2>Register as a Volunteer</h2>
-    <form action="submit_registration.php" method="post">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
+  <main id="main-content">
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required placeholder="you@example.com">
+    <section aria-labelledby="form-heading">
+      <h2 id="form-heading">Volunteer Registration Form</h2>
+      <p>
+        Fields marked with <span class="required" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span> must be completed.
+      </p>
 
-      <label for="phone">Phone:</label>
-      <input type="tel" id="phone" name="phone" placeholder="+245 7567890" required>
+      
+      <div id="form-status" role="status" aria-live="polite" class="form-status"></div>
 
-      <label for="interests">Interests:</label>
-      <textarea id="interests" name="interests" placeholder="Tell us about your interests and how you'd like to contribute..." required></textarea>
+      <form id="volunteer-form" action="process.php" method="post" novalidate>
 
-      <button type="submit">Register</button>
-    </form>
+        <fieldset>
+          <legend>Personal details</legend>
+
+          <div class="form-field">
+            <label for="full-name">Full name <span class="required" aria-hidden="true">*</span></label>
+            <input type="text" id="full-name" name="full_name" required>
+            <span class="error-message" id="full-name-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="email">Email address <span class="required" aria-hidden="true">*</span></label>
+            <input type="email" id="email" name="email" required>
+            <span class="error-message" id="email-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="phone">Phone number <span class="required" aria-hidden="true">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g. 0712345678" required>
+            <span class="error-message" id="phone-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="dob">Date of birth <span class="required" aria-hidden="true">*</span></label>
+            <input type="date" id="dob" name="date_of_birth" required>
+            <span class="error-message" id="dob-error" aria-live="polite"></span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Volunteering preferences</legend>
+
+          <div class="form-field">
+            <label for="area">Preferred volunteer area <span class="required" aria-hidden="true">*</span></label>
+            <select id="area" name="volunteer_area" required>
+              <option value="">-- Select an area --</option>
+              <option value="environment">Environment</option>
+              <option value="education">Education</option>
+              <option value="health">Health &amp; Wellness</option>
+              <option value="elderly-support">Elderly Support</option>
+              <option value="event-support">Event Support</option>
+            </select>
+            <span class="error-message" id="area-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <span class="group-label">Preferred volunteering time <span class="required" aria-hidden="true">*</span></span>
+            <div class="radio-group" role="radiogroup" aria-label="Preferred volunteering time">
+              <label><input type="radio" name="preferred_time" value="morning" required> Morning</label>
+              <label><input type="radio" name="preferred_time" value="afternoon" required> Afternoon</label>
+              <label><input type="radio" name="preferred_time" value="evening" required> Evening</label>
+            </div>
+            <span class="error-message" id="preferred-time-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <span class="group-label">Skills / experience (select all that apply)</span>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="skills[]" value="teaching"> Teaching / mentoring</label>
+              <label><input type="checkbox" name="skills[]" value="first-aid" id="skill-first-aid"> First aid / medical</label>
+              <label><input type="checkbox" name="skills[]" value="driving"> Driving</label>
+              <label><input type="checkbox" name="skills[]" value="event-planning"> Event planning</label>
+              <label><input type="checkbox" name="skills[]" value="it-support"> IT support</label>
+            </div>
+          </div>
+
+          
+          <div class="form-field" id="certification-field" hidden>
+            <label for="certification">First aid / medical certification details <span class="required" aria-hidden="true">*</span></label>
+            <input type="text" id="certification" name="certification_details">
+            <span class="error-message" id="certification-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="hours">Hours available per week <span class="required" aria-hidden="true">*</span></label>
+            <input type="number" id="hours" name="hours_per_week" min="1" max="40" required>
+            <span class="error-message" id="hours-error" aria-live="polite"></span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Volunteering history</legend>
+
+          <div class="form-field">
+            <span class="group-label">Have you volunteered with us before? <span class="required" aria-hidden="true">*</span></span>
+            <div class="radio-group" role="radiogroup" aria-label="Previous volunteering experience">
+              <label><input type="radio" name="volunteered_before" value="yes" id="volunteered-yes" required> Yes</label>
+              <label><input type="radio" name="volunteered_before" value="no" id="volunteered-no" required> No</label>
+            </div>
+            <span class="error-message" id="volunteered-before-error" aria-live="polite"></span>
+          </div>
+
+          
+          <div class="form-field" id="previous-org-field" hidden>
+            <label for="previous-org">Which organization did you volunteer with? <span class="required" aria-hidden="true">*</span></label>
+            <input type="text" id="previous-org" name="previous_organization">
+            <span class="error-message" id="previous-org-error" aria-live="polite"></span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Additional information</legend>
+
+          <div class="form-field">
+            <label for="message">Tell us why you'd like to volunteer</label>
+            <textarea id="message" name="message" rows="4" maxlength="500"></textarea>
+            <span class="char-count" id="message-count" aria-live="polite">0 / 500 characters</span>
+          </div>
+
+          <div class="form-field checkbox-field">
+            <label>
+              <input type="checkbox" id="agree-terms" name="agree_terms" required>
+              I agree to be contacted about volunteering opportunities <span class="required" aria-hidden="true">*</span>
+            </label>
+            <span class="error-message" id="agree-terms-error" aria-live="polite"></span>
+          </div>
+        </fieldset>
+
+        <button type="submit" id="submit-btn">Submit Registration</button>
+      </form>
+    </section>
+
   </main>
 
   <footer>
-    <p>our company name here</p>
+    <p>
+      <a href="index.html">Home</a> |
+      <a href="about.html">Volunteer Areas</a> |
+      <a href="register.html">Register as a volunteer</a>
+    </p>
+    <p>&copy; our company name here</p>
   </footer>
 
   <script src="script.js"></script>
