@@ -1,0 +1,276 @@
+/* ==========================================================================
+   Global Styles & Reset
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f8fb;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Header & Navigation
+   ========================================================================== */
+
+header {
+  background-color: #1f4e79;
+  color: #ffffff;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: 1px;
+}
+
+.tagline {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #d9eaf7;
+}
+
+nav {
+  background-color: #163a5f;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+nav li {
+  display: inline-block;
+}
+
+nav a {
+  display: inline-block;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 14px 18px;
+}
+
+nav a:hover,
+nav a[aria-current="page"] {
+  background-color: #2f75b5;
+}
+
+/* ==========================================================================
+   Main Content Layout
+   ========================================================================== */
+
+main {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 0 15px;
+}
+
+main h1 {
+  color: #1f4e79;
+  border-bottom: 2px solid #e5eef7;
+  padding-bottom: 8px;
+}
+
+section {
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+  color: #1f4e79;
+  border-bottom: 2px solid #e5eef7;
+  padding-bottom: 8px;
+  margin-top: 0;
+}
+
+/* ==========================================================================
+   Lists & Typography
+   ========================================================================== */
+
+ul {
+  padding-left: 20px;
+}
+
+article {
+  background-color: #f9fbfd;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+article h3 {
+  margin-top: 0;
+  color: #1f4e79;
+}
+
+a {
+  color: #1f4e79;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 15px;
+}
+
+caption {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+th,
+td {
+  border: 1px solid #999999;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #d9eaf7;
+  color: #1f4e79;
+}
+
+tr:hover {
+  background-color: #f2f2f2;
+}
+
+/* ==========================================================================
+   Form Controls
+   ========================================================================== */
+
+fieldset {
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+}
+
+legend {
+  font-weight: bold;
+  color: #1f4e79;
+  padding: 0 6px;
+}
+
+.form-field {
+  margin-bottom: 15px;
+}
+
+label,
+.group-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.radio-group label,
+.checkbox-group label,
+.checkbox-field label {
+  display: inline-block;
+  font-weight: normal;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.required {
+  color: #cc0000;
+}
+
+.error-message {
+  color: #cc0000;
+  font-size: 13px;
+  display: block;
+  margin-top: 4px;
+}
+
+.char-count {
+  font-size: 12px;
+  color: #666666;
+  display: block;
+  margin-top: 4px;
+}
+
+button[type="submit"] {
+  background-color: #1f4e79;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #163a5f;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+footer {
+  background-color: #1f4e79;
+  color: #ffffff;
+  text-align: center;
+  padding: 18px;
+  margin-top: 30px;
+}
+
+footer a {
+  color: #ffffff;
+}
+
+footer a:hover {
+  color: #d9eaf7;
+}
