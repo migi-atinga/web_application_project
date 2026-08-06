@@ -1,138 +1,170 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Aug 06, 2026 at 02:54 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
-CREATE DATABASE IF NOT EXISTS community_volunteer_system;
-
-USE community_volunteer_system;
-
-
-CREATE TABLE volunteer_areas (
-    area_id INT AUTO_INCREMENT PRIMARY KEY,
-    area_name VARCHAR(100) NOT NULL
-);
-
-INSERT INTO volunteer_areas (area_name)
-VALUES
-('Environment'),
-('Education'),
-('Health & Wellness'),
-('Elderly Support'),
-('Event Support');
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
-CREATE TABLE volunteers (
-    volunteer_id INT AUTO_INCREMENT PRIMARY KEY,
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-    full_name VARCHAR(100) NOT NULL,
+--
+-- Database: `community_volunteer_system`
+--
 
-    email VARCHAR(100) NOT NULL UNIQUE,
+-- --------------------------------------------------------
 
-    phone VARCHAR(20) NOT NULL,
+--
+-- Table structure for table `volunteers`
+--
 
-    date_of_birth DATE NOT NULL,
+CREATE TABLE `volunteers` (
+  `volunteer_id` int(11) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `volunteer_area` varchar(50) DEFAULT NULL,
+  `area_id` int(11) NOT NULL,
+  `preferred_time` enum('Morning','Afternoon','Evening') NOT NULL,
+  `skills` text DEFAULT NULL,
+  `certification_details` varchar(255) DEFAULT NULL,
+  `hours_per_week` int(11) NOT NULL,
+  `volunteered_before` enum('Yes','No') NOT NULL,
+  `previous_organization` varchar(150) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `agree_terms` tinyint(1) NOT NULL,
+  `registration_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    area_id INT NOT NULL,
+--
+-- Dumping data for table `volunteers`
+--
 
-    preferred_time ENUM('Morning','Afternoon','Evening') NOT NULL,
+INSERT INTO `volunteers` (`volunteer_id`, `full_name`, `email`, `phone`, `date_of_birth`, `volunteer_area`, `area_id`, `preferred_time`, `skills`, `certification_details`, `hours_per_week`, `volunteered_before`, `previous_organization`, `message`, `agree_terms`, `registration_date`) VALUES
+(1, 'John Kamau', 'john@gmail.com', '0712345678', '2003-04-18', NULL, 1, 'Morning', NULL, NULL, 8, 'No', NULL, 'I enjoy helping my community.', 1, '2026-08-06 09:07:08'),
+(2, 'Mary Achieng', 'mary@gmail.com', '0723456789', '2002-11-25', NULL, 2, 'Afternoon', NULL, NULL, 10, 'Yes', 'Red Cross', 'I love teaching children.', 1, '2026-08-06 09:07:08'),
+(3, 'Jesse p', 'admin@strathmore.edu', '0791774884', '2003-08-12', NULL, 1, 'Morning', NULL, NULL, 4, 'Yes', NULL, 'idk', 1, '2026-08-06 09:19:34'),
+(6, 'Migi Atinga', 'migiatinga@gmail.com', '0712345678', '2007-08-08', 'health', 3, 'Afternoon', 'Teaching / Mentoring', NULL, 6, 'No', NULL, 'i am pregnant', 1, '2026-08-06 12:23:08');
 
-    certification_details VARCHAR(255),
+-- --------------------------------------------------------
 
-    hours_per_week INT NOT NULL,
+--
+-- Table structure for table `volunteer_areas`
+--
 
-    volunteered_before ENUM('Yes','No') NOT NULL,
+CREATE TABLE `volunteer_areas` (
+  `area_id` int(11) NOT NULL,
+  `area_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    previous_organization VARCHAR(150),
+--
+-- Dumping data for table `volunteer_areas`
+--
 
-    message TEXT,
+INSERT INTO `volunteer_areas` (`area_id`, `area_name`) VALUES
+(1, 'Environment'),
+(2, 'Education'),
+(3, 'Health & Wellness'),
+(4, 'Elderly Support'),
+(5, 'Event Support');
 
-    agree_terms BOOLEAN NOT NULL,
+-- --------------------------------------------------------
 
-    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--
+-- Table structure for table `volunteer_skills`
+--
 
-    FOREIGN KEY (area_id)
-    REFERENCES volunteer_areas(area_id)
-);
+CREATE TABLE `volunteer_skills` (
+  `skill_id` int(11) NOT NULL,
+  `volunteer_id` int(11) NOT NULL,
+  `skill_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `volunteer_skills`
+--
 
-CREATE TABLE volunteer_skills (
+INSERT INTO `volunteer_skills` (`skill_id`, `volunteer_id`, `skill_name`) VALUES
+(1, 1, 'Driving'),
+(2, 1, 'IT Support'),
+(3, 2, 'Teaching / Mentoring'),
+(4, 2, 'Event Planning'),
+(5, 3, 'Teaching / Mentoring');
 
-    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+--
+-- Indexes for dumped tables
+--
 
-    volunteer_id INT NOT NULL,
+--
+-- Indexes for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  ADD PRIMARY KEY (`volunteer_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `area_id` (`area_id`);
 
-    skill_name VARCHAR(100) NOT NULL,
+--
+-- Indexes for table `volunteer_areas`
+--
+ALTER TABLE `volunteer_areas`
+  ADD PRIMARY KEY (`area_id`);
 
-    FOREIGN KEY (volunteer_id)
-    REFERENCES volunteers(volunteer_id)
-    ON DELETE CASCADE
+--
+-- Indexes for table `volunteer_skills`
+--
+ALTER TABLE `volunteer_skills`
+  ADD PRIMARY KEY (`skill_id`),
+  ADD KEY `volunteer_id` (`volunteer_id`);
 
-);
+--
+-- AUTO_INCREMENT for dumped tables
+--
 
+--
+-- AUTO_INCREMENT for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  MODIFY `volunteer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
-INSERT INTO volunteers
-(
-full_name,
-email,
-phone,
-date_of_birth,
-area_id,
-preferred_time,
-certification_details,
-hours_per_week,
-volunteered_before,
-previous_organization,
-message,
-agree_terms
-)
+--
+-- AUTO_INCREMENT for table `volunteer_areas`
+--
+ALTER TABLE `volunteer_areas`
+  MODIFY `area_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
-VALUES
+--
+-- AUTO_INCREMENT for table `volunteer_skills`
+--
+ALTER TABLE `volunteer_skills`
+  MODIFY `skill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
-(
-'John Kamau',
-'john@gmail.com',
-'0712345678',
-'2003-04-18',
-1,
-'Morning',
-NULL,
-8,
-'No',
-NULL,
-'I enjoy helping my community.',
-1
-),
+--
+-- Constraints for dumped tables
+--
 
-(
-'Mary Achieng',
-'mary@gmail.com',
-'0723456789',
-'2002-11-25',
-2,
-'Afternoon',
-NULL,
-10,
-'Yes',
-'Red Cross',
-'I love teaching children.',
-1
-);
+--
+-- Constraints for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  ADD CONSTRAINT `volunteers_ibfk_1` FOREIGN KEY (`area_id`) REFERENCES `volunteer_areas` (`area_id`);
 
-INSERT INTO volunteer_skills
-(volunteer_id, skill_name)
+--
+-- Constraints for table `volunteer_skills`
+--
+ALTER TABLE `volunteer_skills`
+  ADD CONSTRAINT `volunteer_skills_ibfk_1` FOREIGN KEY (`volunteer_id`) REFERENCES `volunteers` (`volunteer_id`) ON DELETE CASCADE;
+COMMIT;
 
-VALUES
-(1,'Driving'),
-(1,'IT Support'),
-(2,'Teaching / Mentoring'),
-(2,'Event Planning');
-
-
-SELECT
-v.volunteer_id,
-v.full_name,
-v.email,
-v.phone,
-a.area_name,
-v.preferred_time,
-v.hours_per_week
-FROM volunteers v
-JOIN volunteer_areas a
-ON v.area_id = a.area_id;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
