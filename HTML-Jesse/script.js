@@ -1,18 +1,11 @@
-
-
-
-script·JS
-/* Community Volunteer Network  */
+/* Community Volunteer Network */
 
 document.addEventListener("DOMContentLoaded", () => {
-    //  DOM Elements
+    // DOM Elements
     let form = document.getElementById("volunteer-form");
     let formStatus = document.getElementById("form-status");
 
-    // so we stop here to avoid errors.
-    if (!form) {
-        return;
-    }
+    if (!form) return;
 
     // Input fields
     let inputs = {
@@ -39,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Message counter
     let messageCount = document.getElementById("message-count");
 
-    //  Error Messages 
+    // Error Messages 
     let errorMessages = {
         fullName: {
             empty: "Please enter your full name.",
@@ -66,26 +59,33 @@ document.addEventListener("DOMContentLoaded", () => {
         agreeTerms: "You must agree to be contacted to continue.",
     };
 
-    //  Helper Functions 
+    // Helper Functions 
     let showError = (input, errorId, message) => {
-        document.getElementById(errorId).textContent = message;
-        input.classList.add("invalid");
-        input.classList.remove("valid");
+        let errEl = document.getElementById(errorId);
+        if (errEl) errEl.textContent = message;
+        if (input) {
+            input.classList.add("invalid");
+            input.classList.remove("valid");
+        }
     };
 
     let clearError = (input, errorId) => {
-        document.getElementById(errorId).textContent = "";
-        input.classList.remove("invalid");
-        input.classList.add("valid");
+        let errEl = document.getElementById(errorId);
+        if (errEl) errEl.textContent = "";
+        if (input) {
+            input.classList.remove("invalid");
+            input.classList.add("valid");
+        }
     };
 
     let isRadioGroupChecked = (name) => {
         return document.querySelector(`input[name="${name}"]:checked`) !== null;
     };
 
-    //  Validation Functions 
+    // Validation Functions 
     let validateField = (field, errorId, rules) => {
-        let value = field.value.trim();
+        if (!field) return true;
+        let value = field.value ? field.value.trim() : "";
         for (const rule of rules) {
             if (rule.condition(value)) {
                 showError(field, errorId, rule.message);
@@ -115,22 +115,25 @@ document.addEventListener("DOMContentLoaded", () => {
         { condition: (v) => v === "", message: errorMessages.dob },
     ]);
 
-    let  validateArea = () => validateField(inputs.area, "area-error", [
+    let validateArea = () => validateField(inputs.area, "area-error", [
         { condition: (v) => v === "", message: errorMessages.area },
     ]);
 
     let validatePreferredTime = () => {
         const errorElement = document.getElementById("preferred-time-error");
         if (!isRadioGroupChecked("preferred_time")) {
-            errorElement.textContent = errorMessages.preferredTime;
+            if (errorElement) errorElement.textContent = errorMessages.preferredTime;
             return false;
         }
-        errorElement.textContent = "";
+        if (errorElement) errorElement.textContent = "";
         return true;
     };
 
     let validateCertification = () => {
-        if (certificationField.hidden) return true;
+        if (!certificationField || certificationField.hidden) {
+            clearError(certificationInput, "certification-error");
+            return true;
+        }
         return validateField(certificationInput, "certification-error", [
             { condition: (v) => v === "", message: errorMessages.certification },
         ]);
@@ -144,15 +147,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let validateVolunteeredBefore = () => {
         const errorElement = document.getElementById("volunteered-before-error");
         if (!isRadioGroupChecked("volunteered_before")) {
-            errorElement.textContent = errorMessages.volunteeredBefore;
+            if (errorElement) errorElement.textContent = errorMessages.volunteeredBefore;
             return false;
         }
-        errorElement.textContent = "";
+        if (errorElement) errorElement.textContent = "";
         return true;
     };
 
     let validatePreviousOrg = () => {
-        if (previousOrgField.hidden) return true;
+        if (!previousOrgField || previousOrgField.hidden) {
+            clearError(previousOrgInput, "previous-org-error");
+            return true;
+        }
         return validateField(previousOrgInput, "previous-org-error", [
             { condition: (v) => v === "", message: errorMessages.previousOrg },
         ]);
@@ -160,15 +166,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let validateAgreeTerms = () => {
         const errorElement = document.getElementById("agree-terms-error");
-        if (!inputs.agreeTerms.checked) {
-            errorElement.textContent = errorMessages.agreeTerms;
+        if (!inputs.agreeTerms || !inputs.agreeTerms.checked) {
+            if (errorElement) errorElement.textContent = errorMessages.agreeTerms;
             return false;
         }
-        errorElement.textContent = "";
+        if (errorElement) errorElement.textContent = "";
         return true;
     };
 
-    //  Validation Array 
+    // Validation Functions Array
     let validationFunctions = [
         validateFullName,
         validateEmail,
@@ -183,45 +189,77 @@ document.addEventListener("DOMContentLoaded", () => {
         validateAgreeTerms,
     ];
 
-    //  Event Listeners
-    // Toggle certification field
-    firstAidCheckbox.addEventListener("change", () => {
-        certificationField.hidden = !firstAidCheckbox.checked;
-        if (!firstAidCheckbox.checked) {
-            certificationInput.value = "";
-            document.getElementById("certification-error").textContent = "";
-        }
-    });
-
-    // Toggle previous organization field
-    volunteeredYes.addEventListener("change", () => (previousOrgField.hidden = false));
-    volunteeredNo.addEventListener("change", () => {
-        previousOrgField.hidden = true;
-        previousOrgInput.value = "";
-        document.getElementById("previous-org-error").textContent = "";
-    });
-
-    // Character counter
-    inputs.message.addEventListener("input", () => {
-        messageCount.textContent = `${inputs.message.value.length} / 500 characters`;
-    });
-
-    // Form submission
-    form.addEventListener("submit", (e) => {
-        let isFormValid = true;
-        validationFunctions.forEach((validate) => {
-            if (!validate()) isFormValid = false;
+    // Event Listeners for dynamic toggles
+    if (firstAidCheckbox && certificationField) {
+        firstAidCheckbox.addEventListener("change", () => {
+            certificationField.hidden = !firstAidCheckbox.checked;
+            if (!firstAidCheckbox.checked && certificationInput) {
+                certificationInput.value = "";
+                clearError(certificationInput, "certification-error");
+            }
         });
+    }
+
+    if (volunteeredYes && volunteeredNo && previousOrgField) {
+        volunteeredYes.addEventListener("change", () => (previousOrgField.hidden = false));
+        volunteeredNo.addEventListener("change", () => {
+            previousOrgField.hidden = true;
+            if (previousOrgInput) previousOrgInput.value = "";
+            clearError(previousOrgInput, "previous-org-error");
+        });
+    }
+
+    if (inputs.message && messageCount) {
+        inputs.message.addEventListener("input", () => {
+            messageCount.textContent = `${inputs.message.value.length} / 500 characters`;
+        });
+    }
+
+    // Form submission via AJAX (Fetch API)
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Prevent page refresh
+
+        let isFormValid = true;
+
+        // Run each validation check individually without short-circuiting
+        for (let validate of validationFunctions) {
+            let result = validate();
+            if (!result) {
+                isFormValid = false;
+            }
+        }
 
         if (!isFormValid) {
-            e.preventDefault();
-            formStatus.textContent = "Please fix the errors above before submitting.";
+            formStatus.textContent = "Please fix the error(s) marked above before submitting.";
             formStatus.className = "form-status error";
-        } else {
-            formStatus.textContent = "Thank you! Your registration looks good.";
-            formStatus.className = "form-status success";
+            return;
+        }
+
+        // Send data to PHP
+        const formData = new FormData(form);
+
+        try {
+            formStatus.textContent = "Submitting...";
+            formStatus.className = "form-status info";
+
+            const response = await fetch("process.php", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.text();
+
+            if (response.ok && !result.toLowerCase().includes("error")) {
+                formStatus.textContent = "Thank you! Your registration was submitted successfully.";
+                formStatus.className = "form-status success";
+                form.reset();
+            } else {
+                formStatus.textContent = result.replace(/<[^>]*>?/gm, '');
+                formStatus.className = "form-status error";
+            }
+        } catch (error) {
+            formStatus.textContent = "An error occurred while submitting. Please try again.";
+            formStatus.className = "form-status error";
         }
     });
 });
-
-
