@@ -46,18 +46,18 @@ $skillLabels = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Extract & sanitize core text inputs
-    $full_name        = trim($_POST['full_name'] ?? '');
-    $email            = trim($_POST['email'] ?? '');
-    $phone            = trim($_POST['phone'] ?? '');
-    $date_of_birth    = trim($_POST['date_of_birth'] ?? '');
-    $volunteer_area   = trim($_POST['volunteer_area'] ?? '');
-    $preferred_time   = trim($_POST['preferred_time'] ?? '');
-    $hours_per_week   = trim($_POST['hours_per_week'] ?? '');
+    $full_name          = trim($_POST['full_name'] ?? '');
+    $email              = trim($_POST['email'] ?? '');
+    $phone              = trim($_POST['phone'] ?? '');
+    $date_of_birth      = trim($_POST['date_of_birth'] ?? '');
+    $volunteer_area     = trim($_POST['volunteer_area'] ?? '');
+    $preferred_time     = trim($_POST['preferred_time'] ?? '');
+    $hours_per_week     = trim($_POST['hours_per_week'] ?? '');
     $volunteered_before = trim($_POST['volunteered_before'] ?? '');
-    $certification    = trim($_POST['certification_details'] ?? '');
-    $previous_org     = trim($_POST['previous_organization'] ?? '');
-    $message          = trim($_POST['message'] ?? '');
-    $agree_terms      = isset($_POST['agree_terms']);
+    $certification      = trim($_POST['certification_details'] ?? '');
+    $previous_org       = trim($_POST['previous_organization'] ?? '');
+    $message            = trim($_POST['message'] ?? '');
+    $agree_terms        = isset($_POST['agree_terms']) ? 1 : 0;
 
     // Process skills array
     $raw_skills = $_POST['skills'] ?? [];
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    $skills_string = implode(', ', $mapped_skills);
+    $skills_string = !empty($mapped_skills) ? implode(', ', $mapped_skills) : null;
 
     // Backend Validation Checks
     if (empty($full_name) || empty($email) || empty($phone) || empty($date_of_birth) || empty($volunteer_area) || empty($preferred_time) || empty($hours_per_week) || empty($volunteered_before)) {
@@ -90,8 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Convert area name to integer ID if your DB uses an area_id column
+    // Map volunteer_area slug (e.g., 'environment') to numerical area_id
     $area_id = $areaMap[$volunteer_area] ?? null;
+
+    // Set empty optional fields to null for database Insertion
+    $certification = !empty($certification) ? $certification : null;
+    $previous_org  = !empty($previous_org) ? $previous_org : null;
+    $message       = !empty($message) ? $message : null;
 
     // 5. Insert Record into Database
     try {
@@ -100,27 +105,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     email, 
                     phone, 
                     date_of_birth, 
-                    volunteer_area, 
+                    volunteer_area,
+                    area_id, 
                     preferred_time, 
                     skills, 
                     certification_details, 
                     hours_per_week, 
                     volunteered_before, 
                     previous_organization, 
-                    message
+                    message,
+                    agree_terms
                 ) VALUES (
                     :full_name, 
                     :email, 
                     :phone, 
                     :date_of_birth, 
-                    :volunteer_area, 
+                    :volunteer_area,
+                    :area_id, 
                     :preferred_time, 
                     :skills, 
                     :certification_details, 
                     :hours_per_week, 
                     :volunteered_before, 
                     :previous_organization, 
-                    :message
+                    :message,
+                    :agree_terms
                 )";
 
         $stmt = $pdo->prepare($sql);
@@ -130,13 +139,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phone'                 => $phone,
             ':date_of_birth'         => $date_of_birth,
             ':volunteer_area'        => $volunteer_area,
+            ':area_id'               => $area_id,
             ':preferred_time'        => $preferred_time,
             ':skills'                => $skills_string,
             ':certification_details' => $certification,
             ':hours_per_week'        => $hours_per_week,
             ':volunteered_before'    => $volunteered_before,
             ':previous_organization' => $previous_org,
-            ':message'               => $message
+            ':message'               => $message,
+            ':agree_terms'           => $agree_terms
         ]);
 
         if ($executed) {
@@ -149,7 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (PDOException $e) {
         http_response_code(500);
-        // If there's a duplicate email or DB issue
         if ($e->getCode() == 23000) {
             echo "Error: A registration with this email already exists.";
         } else {
